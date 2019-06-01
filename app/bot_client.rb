@@ -1,0 +1,2 @@
+class BotClient
+end
