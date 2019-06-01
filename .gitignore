@@ -7,3 +7,5 @@
 *.iml
 **/target
 **/.idea
+.idea
+.idea/*
