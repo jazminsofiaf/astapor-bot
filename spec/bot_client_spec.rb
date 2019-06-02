@@ -51,7 +51,7 @@ end
 describe 'BotClient' do
   it 'should get a /start message and respond with Hola ' do
     get_updates('fake_token', '/start')
-    moke_get_request('https://reqres.in/api/users/2', 'Hola')
+    moke_get_request('https://astapor-api.herokuapp.com/welcome_message', 'Hola')
     send_message('fake_token', 'Hola Jazmin')
     app = BotClient.new('fake_token')
     app.run_once

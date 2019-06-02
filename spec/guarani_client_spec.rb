@@ -15,7 +15,7 @@ describe 'Guarani' do
   end
 
   it 'should return welcome message' do
-    mock_request('https://reqres.in/api/users/2', 'hola')
+    mock_request('https://astapor-api.herokuapp.com/welcome_message', 'hola')
     guarani_client = GuaraniClient.new
     welcome_message = guarani_client.welcome_message
     expect(welcome_message).to eq 'hola'
