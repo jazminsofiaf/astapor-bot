@@ -1,16 +1,15 @@
 require 'telegram/bot'
+require_relative 'message_handler'
 class BotClient
   def initialize(token = ENV['TELEGRAM_TOKEN'])
     @token = token
     @logger = Logger.new(STDOUT)
+    @guarani = GuaraniClient.new
   end
 
   def handle_message(message, bot)
     @logger.debug "@#{message.from.username}: #{message.inspect}"
-    case message.text
-    when '/start'
-      bot.api.send_message(chat_id: message.chat.id, text: "Hola #{message.from.first_name}")
-    end
+    MessageHandler.new.handle(message, bot)
   end
 
   def run_once

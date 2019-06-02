@@ -36,12 +36,24 @@ def send_message(token, text_message)
     .to_return(status: 200, body: ''.to_json, headers: {})
 end
 
+def moke_get_request(url, response)
+  stub_request(:get, url)
+    .with(
+      headers: {
+        'Accept' => '*/*',
+        'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
+        'User-Agent' => 'Faraday v0.15.4'
+      }
+    )
+    .to_return(status: 200, body: response, headers: {})
+end
+
 describe 'BotClient' do
   it 'should get a /start message and respond with Hola ' do
-    token = 'fake_token'
-    get_updates(token, '/start')
-    send_message(token, 'Hola Jazmin')
-    app = BotClient.new(token)
+    get_updates('fake_token', '/start')
+    moke_get_request('https://reqres.in/api/users/2', 'Hola')
+    send_message('fake_token', 'Hola Jazmin')
+    app = BotClient.new('fake_token')
     app.run_once
   end
 end
