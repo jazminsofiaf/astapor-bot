@@ -42,6 +42,6 @@ describe 'BotClient' do
     get_updates(token, '/start')
     send_message(token, 'Hola Jazmin')
     app = BotClient.new(token)
-    app.run
+    app.run_once
   end
 end
