@@ -1,6 +1,6 @@
 require 'telegram/bot'
 class BotClient
-  def initialize(token)
+  def initialize(token = ENV['TELEGRAM_TOKEN'])
     @token = token
   end
 
