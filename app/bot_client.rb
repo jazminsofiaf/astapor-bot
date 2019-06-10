@@ -1,5 +1,5 @@
 require 'telegram/bot'
-require_relative 'message_handler'
+require_relative 'routes'
 class BotClient
   def initialize(token = ENV['TELEGRAM_TOKEN'])
     @token = token
@@ -9,7 +9,7 @@ class BotClient
 
   def handle_message(message, bot)
     @logger.debug "@#{message.from.username}: #{message.inspect}"
-    MessageHandler.new.handle(message, bot)
+    Routes.new.handle(bot, message)
   end
 
   def run_once

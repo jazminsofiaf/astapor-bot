@@ -32,6 +32,9 @@ GEM
     cucumber-expressions (6.0.1)
     cucumber-tag_expressions (1.1.1)
     cucumber-wire (0.0.1)
+    debase (0.2.2)
+      debase-ruby_core_source (>= 0.10.2)
+    debase-ruby_core_source (0.10.4)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.3)
@@ -109,6 +112,8 @@ GEM
       unicode-display_width (>= 1.4.0, < 1.7)
     rubocop-rspec (1.33.0)
       rubocop (>= 0.60.0)
+    ruby-debug-ide (0.6.1)
+      rake (>= 0.8.1)
     ruby-progressbar (1.10.1)
     ruby_dep (1.5.0)
     safe_yaml (1.0.5)
@@ -142,6 +147,7 @@ PLATFORMS
 DEPENDENCIES
   byebug
   cucumber
+  debase
   dotenv
   faraday
   guard
@@ -151,6 +157,7 @@ DEPENDENCIES
   rspec-core
   rubocop
   rubocop-rspec
+  ruby-debug-ide
   simplecov
   telegram-bot-ruby
   vcr

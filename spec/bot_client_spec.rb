@@ -48,12 +48,51 @@ def moke_get_request(url, response)
     .to_return(status: 200, body: response, headers: {})
 end
 
+def send_options(token, title, _options)
+  body = { "ok": true, "result": [{ "update_id": 115_760_237,
+                                    "message": { "message_id": 1,
+                                                 "from": { "id": 201_878_053,
+                                                           "is_bot": false,
+                                                           "first_name": 'Jazmin',
+                                                           "last_name": 'Ferreiro' },
+                                                 "chat": { "id": 201_878_053,
+                                                           "first_name": 'Jazmin',
+                                                           "last_name": 'Ferreiro',
+                                                           "type": 'private' },
+                                                 "date": 1_559_434_401,
+                                                 "text": title,
+                                                 "entities": [{ "offset": 0,
+                                                                "length": 6,
+                                                                "type": 'bot_command' }] } }] }
+
+  stub_request(:post, "https://api.telegram.org/bot#{token}/sendMessage")
+    .with(
+      body: {
+        'chat_id' => '201878053',
+        'reply_markup' => '{"inline_keyboard":[[{"text":"Algebra","callback_data":"7514"}],[{"text":"Analisis","callback_data":"7515"}]]}',
+        'text' => 'Oferta academica'
+      }
+    ).to_return(status: 200, body: body.to_json, headers: {})
+end
+
 describe 'BotClient' do
   it 'should get a /start message and respond with Hola ' do
     get_updates('fake_token', '/start')
     moke_get_request('https://astapor-api.herokuapp.com/welcome_message', 'Hola')
     send_message('fake_token', 'Hola Jazmin')
     app = BotClient.new('fake_token')
+    app.run_once
+  end
+
+  it 'should get a /oferta_academica message and respond with an inline keyboard' do
+    token = 'fake_token'
+
+    get_updates(token, '/oferta_academica')
+    options = '[[{"text":"Algebra","callback_data":"1"}],[{"text":"Mmemo1","callback_data":"2"}],[{"text":"memo2","callback_data":"3"}]]'
+    send_options(token, 'Oferta academica', options)
+
+    app = BotClient.new(token)
+
     app.run_once
   end
 end
