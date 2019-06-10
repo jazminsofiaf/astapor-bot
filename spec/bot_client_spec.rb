@@ -48,7 +48,7 @@ def moke_get_request(url, response)
     .to_return(status: 200, body: response, headers: {})
 end
 
-def send_options(token, title, _options)
+def send_options(token, title, options)
   body = { "ok": true, "result": [{ "update_id": 115_760_237,
                                     "message": { "message_id": 1,
                                                  "from": { "id": 201_878_053,
@@ -69,7 +69,7 @@ def send_options(token, title, _options)
     .with(
       body: {
         'chat_id' => '201878053',
-        'reply_markup' => '{"inline_keyboard":[[{"text":"Algebra","callback_data":"7514"}],[{"text":"Analisis","callback_data":"7515"}]]}',
+        'reply_markup' => options,
         'text' => 'Oferta academica'
       }
     ).to_return(status: 200, body: body.to_json, headers: {})
@@ -88,7 +88,7 @@ describe 'BotClient' do
     token = 'fake_token'
 
     get_updates(token, '/oferta_academica')
-    options = '[[{"text":"Algebra","callback_data":"1"}],[{"text":"Mmemo1","callback_data":"2"}],[{"text":"memo2","callback_data":"3"}]]'
+    options = '{"inline_keyboard":[[{"text":"Algebra","callback_data":"7514"}],[{"text":"Analisis","callback_data":"7515"}]]}'
     send_options(token, 'Oferta academica', options)
 
     app = BotClient.new(token)
