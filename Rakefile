@@ -1,8 +1,12 @@
-require 'rspec/core/rake_task'
 require 'rubocop/rake_task'
 
-RSpec::Core::RakeTask.new(:spec) do |t|
-  t.rspec_opts = '--color --format d'
+begin
+  require 'rspec/core/rake_task'
+  RSpec::Core::RakeTask.new(:spec) do |t|
+    t.rspec_opts = '--color --format d'
+  end
+rescue LoadError
+  puts 'error at load rspec'
 end
 
 RuboCop::RakeTask.new(:rubocop) do |task|
