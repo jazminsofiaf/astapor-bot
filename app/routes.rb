@@ -14,8 +14,10 @@ class Routes
   end
 
   on_message '/oferta_academica' do |bot, message|
-    key_board = [Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Algebra', callback_data: 7514),
-                 Telegram::Bot::Types::InlineKeyboardButton.new(text: 'Analisis', callback_data: 7515)]
+    key_board = GuaraniClient.new.courses.map do |course|
+      Telegram::Bot::Types::InlineKeyboardButton.new(text: course.name, callback_data: course.code)
+    end
+
     markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: key_board)
 
     bot.api.send_message(chat_id: message.chat.id, text: 'Oferta academica', reply_markup: markup)

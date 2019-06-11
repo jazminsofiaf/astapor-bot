@@ -36,15 +36,8 @@ def send_message(token, text_message)
     .to_return(status: 200, body: ''.to_json, headers: {})
 end
 
-def moke_get_request(url, response)
+def mock_get_request(url, response)
   stub_request(:get, url)
-    .with(
-      headers: {
-        'Accept' => '*/*',
-        'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-        'User-Agent' => 'Faraday v0.15.4'
-      }
-    )
     .to_return(status: 200, body: response, headers: {})
 end
 
@@ -78,7 +71,7 @@ end
 describe 'BotClient' do
   it 'should get a /start message and respond with Hola ' do
     get_updates('fake_token', '/start')
-    moke_get_request('https://astapor-api.herokuapp.com/welcome_message', 'Hola')
+    mock_get_request('https://astapor-api.herokuapp.com/welcome_message', 'Hola')
     send_message('fake_token', 'Hola Jazmin')
     app = BotClient.new('fake_token')
     app.run_once
@@ -87,8 +80,11 @@ describe 'BotClient' do
   it 'should get a /oferta_academica message and respond with an inline keyboard' do
     token = 'fake_token'
 
+    offer = '{"oferta":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"modalidad":"parciales"},{"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"modalidad":"coloquio"}]}'
+
+    mock_get_request('https://astapor-api.herokuapp.com/materias', offer)
     get_updates(token, '/oferta_academica')
-    options = '{"inline_keyboard":[[{"text":"Algebra","callback_data":"7514"}],[{"text":"Analisis","callback_data":"7515"}]]}'
+    options = '{"inline_keyboard":[[{"text":"Algo3","callback_data":"7507"}],[{"text":"TDD","callback_data":"7510"}]]}'
     send_options(token, 'Oferta academica', options)
 
     app = BotClient.new(token)
