@@ -77,13 +77,13 @@ describe 'BotClient' do
     app.run_once
   end
 
-  it 'should get a /oferta_academica message and respond with an inline keyboard' do
+  it 'should get a /oferta message and respond with an inline keyboard' do
     token = 'fake_token'
 
     offer = '{"oferta":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"modalidad":"parciales"},{"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"modalidad":"coloquio"}]}'
 
     mock_get_request('https://astapor-api.herokuapp.com/materias', offer)
-    get_updates(token, '/oferta_academica')
+    get_updates(token, '/oferta')
     options = '{"inline_keyboard":[[{"text":"Algo3","callback_data":"7507"}],[{"text":"TDD","callback_data":"7510"}]]}'
     send_options(token, 'Oferta academica', options)
 

@@ -13,7 +13,7 @@ class Routes
     bot.api.send_message(chat_id: message.chat.id, text: "#{response} #{message.from.first_name}")
   end
 
-  on_message '/oferta_academica' do |bot, message|
+  on_message '/oferta' do |bot, message|
     key_board = GuaraniClient.new.courses.map do |course|
       Telegram::Bot::Types::InlineKeyboardButton.new(text: course.name, callback_data: course.code)
     end
