@@ -97,4 +97,20 @@ describe 'BotClient' do
 
     app.run_once
   end
+
+  context 'when there is no offer available' do
+    it 'should return a message' do
+      token = 'fake_token'
+
+      offer = '{"oferta":[]}'
+
+      mock_get_request('https://astapor-api.herokuapp.com/materias', offer)
+      get_updates(token, '/oferta')
+      send_message(token, 'No hay materias disponibles')
+
+      app = BotClient.new(token)
+
+      app.run_once
+    end
+  end
 end

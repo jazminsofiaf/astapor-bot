@@ -32,6 +32,14 @@ describe 'Guarani' do
     expect(courses).to eq [algo3, tdd]
   end
 
+  context 'when there is no offer available' do
+    it 'should return empty list' do
+      mock_get_request('https://astapor-api.herokuapp.com/materias', '{"oferta":[]}')
+      courses = GuaraniClient.new.courses
+      expect(courses).to eq []
+    end
+  end
+
   it 'should make an inscription' do
     body = { 'nombre_completo' => 'Jazmin Ferreiro',
              'codigo_materia' => 1234,
