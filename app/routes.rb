@@ -23,8 +23,8 @@ class Routes
     bot.api.send_message(chat_id: message.chat.id, text: 'Oferta academica', reply_markup: markup)
   end
 
-  on_response_to 'Quien se queda con el trono?' do |bot, message|
-    response = Tv::Series.handle_response message.data
+  on_response_to 'Oferta academica' do |bot, message|
+    response = Astapor::Course.handle_response message.data
     bot.api.send_message(chat_id: message.message.chat.id, text: response)
   end
 

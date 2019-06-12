@@ -1,16 +1,22 @@
-class Course
-  attr_reader :code, :name, :teacher
+module Astapor
+  class Course
+    attr_reader :code, :name, :teacher
 
-  def initialize(name, teacher, code)
-    @code = code
-    @name = name
-    @teacher = teacher
-  end
+    def initialize(name, teacher, code)
+      @code = code
+      @name = name
+      @teacher = teacher
+    end
 
-  def ==(other)
-    (other.class == self.class) &&
-      (other.name == name) &&
-      (other.code == code) &&
-      (other.teacher == teacher)
+    def ==(other)
+      (other.class == self.class) &&
+        (other.name == name) &&
+        (other.code == code) &&
+        (other.teacher == teacher)
+    end
+
+    def self.handle_response(course_code)
+      GuaraniClient.new.inscription(course_code)
+    end
   end
 end

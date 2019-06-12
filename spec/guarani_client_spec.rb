@@ -3,33 +3,42 @@ require_relative '../app/guarani_client'
 require_relative '../app/models/course'
 
 describe 'Guarani' do
-  def mock_request(guarani_url, body)
+  def mock_get_request(guarani_url, response)
     stub_request(:get, guarani_url)
-      .with(
-        headers: {
-          'Accept' => '*/*',
-          'Accept-Encoding' => 'gzip;q=1.0,deflate;q=0.6,identity;q=0.3',
-          'User-Agent' => 'Faraday v0.15.4'
-        }
-      )
-      .to_return(status: 200, body: body, headers: {})
+      .to_return(status: 200, body: response, headers: {})
+  end
+
+  def mock_post_request(guarani_url, body, response)
+    stub_request(:post, guarani_url)
+      .with(body: body)
+      .to_return(status: 200, body: response, headers: {})
   end
 
   it 'should return welcome message' do
-    mock_request('https://astapor-api.herokuapp.com/welcome_message', 'hola')
+    mock_get_request('https://astapor-api.herokuapp.com/welcome_message', 'hola')
     guarani_client = GuaraniClient.new
     welcome_message = guarani_client.welcome_message
     expect(welcome_message).to eq 'hola'
   end
 
-  offer = '{"oferta":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"modalidad":"parciales"},{"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"modalidad":"coloquio"}]}'
+  offers = '{"oferta":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"modalidad":"parciales"},{"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"modalidad":"coloquio"}]}'
 
-  algo3 = Course.new('Algo3', 'Fontela', 7507)
-  tdd = Course.new('TDD', 'Emilio', 7510)
+  algo3 = Astapor::Course.new('Algo3', 'Fontela', 7507)
+  tdd = Astapor::Course.new('TDD', 'Emilio', 7510)
 
   it 'should return list of courses' do
-    mock_request('https://astapor-api.herokuapp.com/materias', offer)
+    mock_get_request('https://astapor-api.herokuapp.com/materias', offers)
     courses = GuaraniClient.new.courses
     expect(courses).to eq [algo3, tdd]
+  end
+
+  it 'should make an inscription' do
+    body = { 'nombre_completo' => 'Jazmin Ferreiro',
+             'codigo_materia' => 1234,
+             'username_alumno' => 'jaz2' }.to_json
+    success = { "resultado": 'inscripcion_creada' }.to_json
+    mock_post_request('https://astapor-api.herokuapp.com/alumnos', body, success)
+    result_msg = GuaraniClient.new.inscribe('Jazmin Ferreiro', 'jaz2', 1234)
+    expect(result_msg).to eq('inscripcion_creada')
   end
 end
