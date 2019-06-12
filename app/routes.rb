@@ -24,7 +24,9 @@ class Routes
   end
 
   on_response_to 'Oferta academica' do |bot, message|
-    response = Astapor::Course.handle_response message.data
+    student_name = message.from.first_name + ' ' + message.from.surename
+
+    response = Astapor::Course.handle_response(student_name, message.from.username, message.data)
     bot.api.send_message(chat_id: message.message.chat.id, text: response)
   end
 

@@ -36,6 +36,12 @@ def send_message(token, text_message)
     .to_return(status: 200, body: ''.to_json, headers: {})
 end
 
+def mock_post_request(guarani_url, body, response)
+  stub_request(:post, guarani_url)
+    .with(body: body)
+    .to_return(status: 200, body: response, headers: {})
+end
+
 def mock_get_request(url, response)
   stub_request(:get, url)
     .to_return(status: 200, body: response, headers: {})

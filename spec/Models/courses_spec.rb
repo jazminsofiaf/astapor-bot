@@ -1,4 +1,6 @@
+require 'webmock/rspec'
 require 'rspec'
+
 require_relative '../../app/models/course'
 
 describe 'Courses' do
@@ -22,6 +24,13 @@ describe 'Courses' do
     course2 = Astapor::Course.new('Análisis matemático I', 'Sirne', 9325)
     it 'with the same name, teacher and code, they are equals' do
       expect(course).to eq(course2)
+    end
+  end
+
+  context 'when there is an inscription' do
+    response = Astapor::Course.handle_response('Jazmin Ferreiro', 'jaz2', 9123)
+    it 'it return a message' do
+      expect(response).not_to be nil
     end
   end
 end
