@@ -19,7 +19,7 @@ class Routes
       bot.api.send_message(chat_id: message.chat.id, text: EMPTY_COURSES_MSG)
     else
       key_board = courses.map do |course|
-        Telegram::Bot::Types::InlineKeyboardButton.new(text: course.name, callback_data: course.code)
+        Telegram::Bot::Types::InlineKeyboardButton.new(text: course.name, callback_data: course.code.to_s)
       end
 
       markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: key_board)
@@ -29,6 +29,7 @@ class Routes
   end
 
   on_response_to 'Oferta academica' do |bot, message|
+    @logger.debug "response to oferta academica: #{message.data}"
     student_name = message.from.first_name + ' ' + message.from.surename
 
     response = Astapor::Course.handle_response(student_name, message.from.username, message.data)

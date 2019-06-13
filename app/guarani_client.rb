@@ -1,5 +1,6 @@
 require 'faraday'
 require 'json'
+require 'telegram/bot'
 require_relative '../app/models/course'
 require_relative '../app/helpers/inscription'
 require_relative '../app/helpers/response'
@@ -16,6 +17,10 @@ class GuaraniClient
   CONTENT_TYPE = 'Content-Type'.freeze
   APPLICATION_JSON = 'application/json'.freeze
 
+  def initialize
+    @logger = Logger.new(STDOUT)
+  end
+
   def welcome_message
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get WELCOME_PATH
@@ -31,6 +36,7 @@ class GuaraniClient
 
   def inscribe(name, username, code)
     inscription_body = Inscription.new.body(name, username, code)
+    @logger.debug "body inscription: #{inscription_body}"
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.post do |req|
       req.url INSCRIPTION_PATH
