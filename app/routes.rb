@@ -29,7 +29,7 @@ class Routes
   end
 
   on_response_to 'Oferta academica' do |bot, message|
-    @logger.debug "response to oferta academica: #{message.data}"
+    puts "response to oferta academica: #{message.data}"
     student_name = message.from.first_name + ' ' + message.from.last_name
 
     response = Astapor::Course.handle_response(student_name, message.from.username, message.data)
