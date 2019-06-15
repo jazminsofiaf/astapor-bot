@@ -3,7 +3,7 @@ require_relative '../lib/message_handler'
 require_relative 'guarani_client'
 require 'telegram/bot'
 
-DEFAULT_MESSAGE = 'Perdon! No se como ayudarte con eso \u{1F64A}, prueba preguntando de otra forma!'.freeze
+DEFAULT_MESSAGE = "Perdon! No se como ayudarte con eso \u{1F64A}, prueba preguntando de otra forma!".freeze
 EMPTY_COURSES_MSG = 'No hay materias disponibles'.freeze
 BOOKS = '\U0001F4DA'.freeze
 class Routes
