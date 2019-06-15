@@ -4,7 +4,7 @@ require_relative 'guarani_client'
 require 'telegram/bot'
 require_relative '../app/helpers/emoji'
 
-DEFAULT_MESSAGE = "Perdon! No se como ayudarte con eso #{Emoji.code(:spreak_no_evil)}" \
+DEFAULT_MESSAGE = "Perdon! No se como ayudarte con eso #{Emoji.code(:speak_no_evil)}" \
                    'prueba preguntando de otra forma!'.freeze
 EMPTY_COURSES_MSG = 'No hay materias disponibles'.freeze
 
