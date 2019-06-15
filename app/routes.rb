@@ -14,7 +14,7 @@ class Routes
   end
 
   on_message '/oferta' do |bot, message|
-    courses = GuaraniClient.new.courses
+    courses = GuaraniClient.new.courses(message.from.username)
     if courses.empty?
       bot.api.send_message(chat_id: message.chat.id, text: EMPTY_COURSES_MSG)
     else

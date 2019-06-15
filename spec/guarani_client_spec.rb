@@ -27,15 +27,15 @@ describe 'Guarani' do
   tdd = Astapor::Course.new('TDD', 'Emilio', 7510)
 
   it 'should return list of courses' do
-    mock_get_request('https://astapor-api.herokuapp.com/materias', offers)
-    courses = GuaraniClient.new.courses
+    mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', offers)
+    courses = GuaraniClient.new.courses('jaz')
     expect(courses).to eq [algo3, tdd]
   end
 
   context 'when there is no offer available' do
     it 'should return empty list' do
-      mock_get_request('https://astapor-api.herokuapp.com/materias', '{"oferta":[]}')
-      courses = GuaraniClient.new.courses
+      mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', '{"oferta":[]}')
+      courses = GuaraniClient.new.courses('jaz')
       expect(courses).to eq []
     end
   end

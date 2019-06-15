@@ -7,7 +7,8 @@ def get_updates(token, text_message)
                                                  "from": { "id": 201_878_053,
                                                            "is_bot": false,
                                                            "first_name": 'Jazmin',
-                                                           "last_name": 'Ferreiro' },
+                                                           "last_name": 'Ferreiro',
+                                                           "username": 'jaz' },
                                                  "chat": { "id": 201_878_053,
                                                            "first_name": 'Jazmin',
                                                            "last_name": 'Ferreiro',
@@ -88,8 +89,8 @@ describe 'BotClient' do
 
     offer = '{"oferta":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"modalidad":"parciales"},{"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"modalidad":"coloquio"}]}'
 
-    mock_get_request('https://astapor-api.herokuapp.com/materias', offer)
     get_updates(token, '/oferta')
+    mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', offer)
     options = '{"inline_keyboard":[[{"text":"Algo3","callback_data":"7507"}],[{"text":"TDD","callback_data":"7510"}]]}'
     send_options(token, 'Oferta academica', options)
 
@@ -104,8 +105,9 @@ describe 'BotClient' do
 
       offer = '{"oferta":[]}'
 
-      mock_get_request('https://astapor-api.herokuapp.com/materias', offer)
       get_updates(token, '/oferta')
+      mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', offer)
+
       send_message(token, 'No hay materias disponibles')
 
       app = BotClient.new(token)
