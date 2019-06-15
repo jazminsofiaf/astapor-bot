@@ -1,14 +1,12 @@
+require_relative 'emoji'
 class Response
   RESULT = 'resultado'.freeze
   ERROR = 'error'.freeze
-  TADA = '\U0001F389'.freeze
-  NO_GOOD = '\U0001F645'.freeze
-  X = '\U0000274C'.freeze
 
   BOT_RESPONSES = {
-    'INSCRIPCION_CREADA' => "Listo! ya estas inscripto #{TADA.encode('utf-8')}",
-    'CUPO_COMPLETO' => "Oups, no es posible realizar la inscripcion #{X.encode('utf-8')}"\
-                       "el cupo ya está completo #{NO_GOOD.encode('utf-8')}",
+    'INSCRIPCION_CREADA' => "Listo! ya estas inscripto #{Emoji.code(:tada)}",
+    'CUPO_COMPLETO' => "Oups, no es posible realizar la inscripcion #{Emoji.code(:x)}"\
+                        "el cupo ya está completo #{Emoji.code(:no_good)}",
     'INSCRIPCION_DUPLICADA' => 'Ya estas incripto'
   }.freeze
   attr_reader :msg

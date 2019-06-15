@@ -6,7 +6,7 @@ describe 'Response' do
   context 'when call guarani ' do
     it 'parse the response' do
       res = Response.new({ resultado:  'INSCRIPCION_CREADA' }.to_json)
-      expect(res.msg).to eq('Listo! ya estas inscripto \\U0001F389')
+      expect(res.msg).to eq("Listo! ya estas inscripto \u{1F389}")
     end
 
     it 'parse the error' do

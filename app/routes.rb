@@ -2,19 +2,19 @@ require 'telegram/bot'
 require_relative '../lib/message_handler'
 require_relative 'guarani_client'
 require 'telegram/bot'
+require_relative '../app/helpers/emoji'
 
-NO_SPEAK_MONKEY = "\u{1F64A}".freeze
-
-DEFAULT_MESSAGE = 'Perdon! No se como ayudarte con eso' + NO_SPEAK_MONKEY + ' prueba preguntando de otra forma!'.freeze
+DEFAULT_MESSAGE = "Perdon! No se como ayudarte con eso #{Emoji.code(:spreak_no_evil)}" \
+                   'prueba preguntando de otra forma!'.freeze
 EMPTY_COURSES_MSG = 'No hay materias disponibles'.freeze
-BOOKS = '\U0001F4DA'.freeze
+
 class Routes
   include MessageHandler
 
   on_message '/start' do |bot, message|
     response = GuaraniClient.new.welcome_message
     bot.api.send_message(chat_id: message.chat.id,
-                         text: "#{response} #{message.from.first_name} #{BOOKS.encode('utf-8')}")
+                         text: "#{response} #{message.from.first_name} #{Emoji.code(:books)}")
   end
 
   on_message '/oferta' do |bot, message|
