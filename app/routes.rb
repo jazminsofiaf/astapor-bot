@@ -5,13 +5,14 @@ require 'telegram/bot'
 
 DEFAULT_MESSAGE = 'Perdon! No se como ayudarte con eso, prueba preguntando de otra forma!'.freeze
 EMPTY_COURSES_MSG = 'No hay materias disponibles'.freeze
+BOOKS = '\U0001F4DA'.freeze
 class Routes
   include MessageHandler
 
   on_message '/start' do |bot, message|
     response = GuaraniClient.new.welcome_message
     bot.api.send_message(chat_id: message.chat.id,
-                         text: "#{response} #{message.from.first_name} :books: :mortar_board:")
+                         text: "#{response} #{message.from.first_name} #{BOOKS.encode('utf-8')}")
   end
 
   on_message '/oferta' do |bot, message|
