@@ -10,7 +10,8 @@ class Routes
 
   on_message '/start' do |bot, message|
     response = GuaraniClient.new.welcome_message
-    bot.api.send_message(chat_id: message.chat.id, text: "#{response} #{message.from.first_name}")
+    bot.api.send_message(chat_id: message.chat.id,
+                         text: "#{response} #{message.from.first_name} :books: :mortar_board:")
   end
 
   on_message '/oferta' do |bot, message|

@@ -3,8 +3,8 @@ class Response
   ERROR = 'error'.freeze
 
   BOT_RESPONSES = {
-    'INSCRIPCION_CREADA' => 'Listo! ya estas inscripto',
-    'CUPO_COMPLETO' => 'Oups, no es posible realizar la inscripcion, el cupo ya está completo',
+    'INSCRIPCION_CREADA' => 'Listo! ya estas inscripto :tada:',
+    'CUPO_COMPLETO' => 'Oups, no es posible realizar la inscripcion :x: el cupo ya está completo :no_goo:',
     'INSCRIPCION_DUPLICADA' => 'Ya estas incripto'
   }.freeze
   attr_reader :msg

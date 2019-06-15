@@ -79,7 +79,7 @@ describe 'BotClient' do
   it 'should get a /start message and respond with Hola ' do
     get_updates('fake_token', '/start')
     mock_get_request('https://astapor-api.herokuapp.com/welcome_message', 'Hola')
-    send_message('fake_token', 'Hola Jazmin')
+    send_message('fake_token', 'Hola Jazmin :books: :mortar_board:')
     app = BotClient.new('fake_token')
     app.run_once
   end
