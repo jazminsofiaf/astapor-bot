@@ -9,6 +9,8 @@ DEFAULT_MESSAGE = "Perdon! No se como ayudarte con eso #{Emoji.code(:speak_no_ev
 EMPTY_COURSES_MSG = 'No hay materias disponibles'.freeze
 EMPTY_INSCRIPTIONS_MSG = 'No hay inscripciones realizadas en este momento'.freeze
 
+INSCRIPTIONS_MSG = 'Inscripciones realizadas:'.freeze
+
 class Routes
   include MessageHandler
 
@@ -38,9 +40,11 @@ class Routes
     if inscriptions.empty?
       bot.api.send_message(chat_id: message.chat.id, text: EMPTY_INSCRIPTIONS_MSG)
     else
+      msg = INSCRIPTIONS_MSG
       inscriptions.each do |course|
-        bot.api.send_message(chat_id: message.chat.id, text: course.name)
+        msg += ' ' + course.name + ','
       end
+      bot.api.send_message(chat_id: message.chat.id, text: msg[0...msg.length - 1])
     end
   end
 
