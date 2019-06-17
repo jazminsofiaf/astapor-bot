@@ -7,6 +7,9 @@ require_relative '../app/helpers/emoji'
 DEFAULT_MESSAGE = "Perdon! No se como ayudarte con eso #{Emoji.code(:speak_no_evil)}" \
                    'prueba preguntando de otra forma!'.freeze
 EMPTY_COURSES_MSG = 'No hay materias disponibles'.freeze
+EMPTY_INSCRIPTIONS_MSG = 'No hay inscripciones realizadas en este momento'.freeze
+
+INSCRIPTIONS_MSG = 'Inscripciones realizadas:'.freeze
 
 class Routes
   include MessageHandler
@@ -29,6 +32,19 @@ class Routes
       markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: key_board)
 
       bot.api.send_message(chat_id: message.chat.id, text: 'Oferta academica', reply_markup: markup)
+    end
+  end
+
+  on_message '/inscripciones' do |bot, message|
+    inscriptions = GuaraniClient.new.inscriptions(message.from.username)
+    if inscriptions.empty?
+      bot.api.send_message(chat_id: message.chat.id, text: EMPTY_INSCRIPTIONS_MSG)
+    else
+      msg = INSCRIPTIONS_MSG
+      inscriptions.each do |course|
+        msg += ' ' + course.name + ','
+      end
+      bot.api.send_message(chat_id: message.chat.id, text: msg[0...msg.length - 1])
     end
   end
 
