@@ -40,6 +40,14 @@ describe 'Guarani' do
     expect(courses).to eq [algo3, tdd]
   end
 
+  context 'when there are no inscriptions done by the student' do
+    it 'should return empty list' do
+      mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', '{"inscripciones":[]}')
+      courses = GuaraniClient.new.courses('jaz')
+      expect(courses).to eq []
+    end
+  end
+
   context 'when there is no offer available' do
     it 'should return empty list' do
       mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', '{"oferta":[]}')
