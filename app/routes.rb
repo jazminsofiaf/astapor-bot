@@ -26,7 +26,8 @@ class Routes
       bot.api.send_message(chat_id: message.chat.id, text: EMPTY_COURSES_MSG)
     else
       key_board = courses.map do |course|
-        Telegram::Bot::Types::InlineKeyboardButton.new(text: course.name, callback_data: course.code.to_s)
+        Telegram::Bot::Types::InlineKeyboardButton.new(text: course.name + ' Cupos Disponibles: ' + course.available_quota.to_s,
+                                                       callback_data: course.code.to_s)
       end
 
       markup = Telegram::Bot::Types::InlineKeyboardMarkup.new(inline_keyboard: key_board)

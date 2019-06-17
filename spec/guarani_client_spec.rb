@@ -21,12 +21,13 @@ describe 'Guarani' do
     expect(welcome_message).to eq 'hola'
   end
 
-  offers = '{"oferta":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"modalidad":"parciales"},{"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"modalidad":"coloquio"}]}'
+  offers = '{"oferta":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"cupo_disponible":35,"modalidad":"parciales"},
+  {"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"cupo_disponible":50,"modalidad":"coloquio"}]}'
   inscriptions = '{"inscripciones":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"modalidad":"parciales"},
   {"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"modalidad":"coloquio"}]}'
 
-  algo3 = Astapor::Course.new('Algo3', 'Fontela', 7507)
-  tdd = Astapor::Course.new('TDD', 'Emilio', 7510)
+  algo3 = Astapor::Course.new('Algo3', 'Fontela', 7507, 35)
+  tdd = Astapor::Course.new('TDD', 'Emilio', 7510, 50)
 
   it 'should return list of courses' do
     mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', offers)
