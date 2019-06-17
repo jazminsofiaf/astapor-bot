@@ -4,6 +4,7 @@
 .DS_Store
 .settings
 .env
+*.vagrant
 *.iml
 **/target
 **/.idea
