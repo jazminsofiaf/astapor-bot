@@ -34,20 +34,6 @@ describe 'Guarani' do
     expect(courses).to eq [algo3, tdd]
   end
 
-  it 'should return list of courses where the student is inscribed' do
-    mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', inscriptions)
-    courses = GuaraniClient.new.courses('jaz')
-    expect(courses).to eq [algo3, tdd]
-  end
-
-  context 'when there are no inscriptions done by the student' do
-    it 'should return empty list' do
-      mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', '{"inscripciones":[]}')
-      courses = GuaraniClient.new.courses('jaz')
-      expect(courses).to eq []
-    end
-  end
-
   context 'when there is no offer available' do
     it 'should return empty list' do
       mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', '{"oferta":[]}')
@@ -64,5 +50,19 @@ describe 'Guarani' do
     mock_post_request('https://astapor-api.herokuapp.com/alumnos', body, success)
     result_msg = GuaraniClient.new.inscribe('Jazmin Ferreiro', 'jaz2', 1234)
     expect(result_msg).to eq('inscripcion_creada')
+  end
+
+  it 'should return list of courses where the student is inscribed' do
+    mock_get_request('https://astapor-api.herokuapp.com/inscripciones?usernameAlumno=jaz', inscriptions)
+    inscriptions = GuaraniClient.new.inscriptions('jaz')
+    expect(inscriptions).to eq [algo3, tdd]
+  end
+
+  context 'when there are no inscriptions done by the student' do
+    it 'should return empty list' do
+      mock_get_request('https://astapor-api.herokuapp.com/inscripciones?usernameAlumno=jaz', '{"inscripciones":[]}')
+      inscriptions = GuaraniClient.new.inscriptions('jaz')
+      expect(inscriptions).to eq []
+    end
   end
 end

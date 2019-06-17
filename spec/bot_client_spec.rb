@@ -115,4 +115,21 @@ describe 'BotClient' do
       app.run_once
     end
   end
+
+  context 'when there are no inscriptions done' do
+    it 'should return a message' do
+      token = 'fake_token'
+
+      inscriptions = '{"inscripciones":[]}'
+
+      get_updates(token, '/inscripciones')
+      mock_get_request('https://astapor-api.herokuapp.com/inscripciones?usernameAlumno=jaz', inscriptions)
+
+      send_message(token, 'No hay inscripciones realizadas en este momento')
+
+      app = BotClient.new(token)
+
+      app.run_once
+    end
+  end
 end

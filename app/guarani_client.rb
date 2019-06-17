@@ -9,6 +9,7 @@ class GuaraniClient
   WELCOME_PATH = '/welcome_message'.freeze
   COURSE_PATH = '/materias'.freeze
   INSCRIPTION_PATH = '/alumnos'.freeze
+  INSCRIPTIONS_PATH = '/inscripciones'.freeze
 
   SUBJECT_KEY = 'nombre'.freeze
   TEACHER_KEY = 'docente'.freeze
@@ -31,14 +32,15 @@ class GuaraniClient
   def courses(user_name)
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get COURSE_PATH, usernameAlumno: user_name
-    response_parsed = JSON.parse(response.body)
-    courses = if response_parsed.key?(OFFER_KEY)
-                response_parsed[OFFER_KEY]
-              else
-                response_parsed[INSCRIPTIONS_KEY]
-              end
-
+    courses = JSON.parse(response.body)[OFFER_KEY]
     courses.map { |course| Astapor::Course.new(course[SUBJECT_KEY], course[TEACHER_KEY], course[CODE_KEY]) }
+  end
+
+  def inscriptions(user_name)
+    connection = Faraday.new(url: GUARANI_URL)
+    response = connection.get INSCRIPTIONS_PATH, usernameAlumno: user_name
+    inscriptions = JSON.parse(response.body)[INSCRIPTIONS_KEY]
+    inscriptions.map { |course| Astapor::Course.new(course[SUBJECT_KEY], course[TEACHER_KEY], course[CODE_KEY]) }
   end
 
   def inscribe(name, username, code)
