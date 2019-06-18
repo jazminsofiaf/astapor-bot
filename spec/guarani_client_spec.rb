@@ -25,6 +25,7 @@ describe 'Guarani' do
   {"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"cupo_disponible":50,"modalidad":"coloquio"}]}'
   inscriptions = '{"inscripciones":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"modalidad":"parciales"},
   {"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"modalidad":"coloquio"}]}'
+  average = '{"materias_aprobadas":2,"nota_promedio":8}'
 
   algo3 = Astapor::Course.new('Algo3', 'Fontela', 7507, 35)
   tdd = Astapor::Course.new('TDD', 'Emilio', 7510, 50)
@@ -65,5 +66,12 @@ describe 'Guarani' do
       inscriptions = GuaraniClient.new.inscriptions('jaz')
       expect(inscriptions).to eq []
     end
+  end
+
+  it 'should return a 2 and an 8 when the amount of approved courses is 2 and the total average is 8' do
+    mock_get_request('https://astapor-api.herokuapp.com/alumnos/promedio?usernameAlumno=jaz', average)
+    amount_approved, average = GuaraniClient.new.grades_average('jaz')
+    expect(amount_approved).to eq 2
+    expect(average).to eq 8
   end
 end
