@@ -11,4 +11,11 @@ stages:
 job_build:
   stage: build
   script:
-    bundle exec rake
+   - bundle exec rake
+job_deploy:
+  stage: deploy
+  script:
+    - gem install dpl
+    - dpl --provider=heroku --app=astapor-bot --api-key=1eef7d7f-9679-4f40-8ce4-49b1bea812f2
+  only:
+    - master
