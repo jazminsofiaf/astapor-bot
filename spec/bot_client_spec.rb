@@ -148,4 +148,21 @@ describe 'BotClient' do
       app.run_once
     end
   end
+
+  context 'when there are no approved courses' do
+    it 'should return a message' do
+      token = 'fake_token'
+
+      average = '{"materias_aprobadas":0,"nota_promedio":"nil"}'
+
+      get_updates(token, '/promedio')
+      mock_get_request('https://astapor-api.herokuapp.com/alumnos/promedio?usernameAlumno=jaz', average)
+
+      send_message(token, 'Cantidad de materias aprobadas 0')
+
+      app = BotClient.new(token)
+
+      app.run_once
+    end
+  end
 end

@@ -7,9 +7,12 @@ require_relative '../app/helpers/emoji'
 DEFAULT_MESSAGE = "Perdon! No se como ayudarte con eso #{Emoji.code(:speak_no_evil)}" \
                    'prueba preguntando de otra forma!'.freeze
 EMPTY_COURSES_MSG = 'No hay materias disponibles'.freeze
+
 EMPTY_INSCRIPTIONS_MSG = 'No hay inscripciones realizadas en este momento'.freeze
 
 INSCRIPTIONS_MSG = 'Inscripciones realizadas:'.freeze
+
+NO_APPROVED_COURSES_MSG = 'Cantidad de materias aprobadas 0'.freeze
 
 class Routes
   include MessageHandler
@@ -47,6 +50,11 @@ class Routes
       end
       bot.api.send_message(chat_id: message.chat.id, text: msg[0...msg.length - 1])
     end
+  end
+
+  on_message '/promedio' do |bot, message|
+    amount_approved = GuaraniClient.new.grades_average(message.from.username)
+    bot.api.send_message(chat_id: message.chat.id, text: NO_APPROVED_COURSES_MSG) if amount_approved[0].zero?
   end
 
   on_response_to 'Oferta academica' do |bot, message|
