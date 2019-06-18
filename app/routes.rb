@@ -12,7 +12,9 @@ EMPTY_INSCRIPTIONS_MSG = 'No hay inscripciones realizadas en este momento'.freez
 
 INSCRIPTIONS_MSG = 'Inscripciones realizadas:'.freeze
 
-NO_APPROVED_COURSES_MSG = 'Cantidad de materias aprobadas 0'.freeze
+APPROVED_COURSES_MSG = 'Cantidad de materias aprobadas '.freeze
+
+GRADES_AVERAGE_MSG = ', promedio general '.freeze
 
 class Routes
   include MessageHandler
@@ -53,8 +55,12 @@ class Routes
   end
 
   on_message '/promedio' do |bot, message|
-    amount_approved = GuaraniClient.new.grades_average(message.from.username)
-    bot.api.send_message(chat_id: message.chat.id, text: NO_APPROVED_COURSES_MSG) if amount_approved[0].zero?
+    amount_approved, average = GuaraniClient.new.grades_average(message.from.username)
+    if amount_approved.zero?
+      bot.api.send_message(chat_id: message.chat.id, text: APPROVED_COURSES_MSG + amount_approved.to_s)
+    else
+      bot.api.send_message(chat_id: message.chat.id, text: APPROVED_COURSES_MSG + amount_approved.to_s + GRADES_AVERAGE_MSG + average.to_s)
+    end
   end
 
   on_response_to 'Oferta academica' do |bot, message|
