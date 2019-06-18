@@ -9,11 +9,17 @@ class GuaraniClient
   WELCOME_PATH = '/welcome_message'.freeze
   COURSE_PATH = '/materias'.freeze
   INSCRIPTION_PATH = '/alumnos'.freeze
+  INSCRIPTIONS_PATH = '/inscripciones'.freeze
+  GRADES_AVERAGE_PATH = '/alumnos/promedio'.freeze
 
   SUBJECT_KEY = 'nombre'.freeze
   TEACHER_KEY = 'docente'.freeze
   CODE_KEY = 'codigo'.freeze
   OFFER_KEY = 'oferta'.freeze
+  INSCRIPTIONS_KEY = 'inscripciones'.freeze
+  QUOTA_KEY = 'cupo_disponible'.freeze
+  AVERAGE_KEY = 'nota_promedio'.freeze
+  APPROVED_COURSES_KEY = 'materias_aprobadas'.freeze
   CONTENT_TYPE = 'Content-Type'.freeze
   APPLICATION_JSON = 'application/json'.freeze
 
@@ -31,7 +37,22 @@ class GuaraniClient
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get COURSE_PATH, usernameAlumno: user_name
     courses = JSON.parse(response.body)[OFFER_KEY]
-    courses.map { |course| Astapor::Course.new(course[SUBJECT_KEY], course[TEACHER_KEY], course[CODE_KEY]) }
+    courses.map { |course| Astapor::Course.new(course[SUBJECT_KEY], course[TEACHER_KEY], course[CODE_KEY], course[QUOTA_KEY]) }
+  end
+
+  def inscriptions(user_name)
+    connection = Faraday.new(url: GUARANI_URL)
+    response = connection.get INSCRIPTIONS_PATH, usernameAlumno: user_name
+    inscriptions = JSON.parse(response.body)[INSCRIPTIONS_KEY]
+    inscriptions.map { |course| Astapor::Course.new(course[SUBJECT_KEY], course[TEACHER_KEY], course[CODE_KEY]) }
+  end
+
+  def grades_average(user_name)
+    connection = Faraday.new(url: GUARANI_URL)
+    response = connection.get GRADES_AVERAGE_PATH, usernameAlumno: user_name
+    grades_av = JSON.parse(response.body)[AVERAGE_KEY]
+    approved_courses = JSON.parse(response.body)[APPROVED_COURSES_KEY]
+    [approved_courses, grades_av]
   end
 
   def inscribe(name, username, code)

@@ -21,10 +21,14 @@ describe 'Guarani' do
     expect(welcome_message).to eq 'hola'
   end
 
-  offers = '{"oferta":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"modalidad":"parciales"},{"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"modalidad":"coloquio"}]}'
+  offers = '{"oferta":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"cupo_disponible":35,"modalidad":"parciales"},
+  {"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"cupo_disponible":50,"modalidad":"coloquio"}]}'
+  inscriptions = '{"inscripciones":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"modalidad":"parciales"},
+  {"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"modalidad":"coloquio"}]}'
+  average = '{"materias_aprobadas":2,"nota_promedio":8}'
 
-  algo3 = Astapor::Course.new('Algo3', 'Fontela', 7507)
-  tdd = Astapor::Course.new('TDD', 'Emilio', 7510)
+  algo3 = Astapor::Course.new('Algo3', 'Fontela', 7507, 35)
+  tdd = Astapor::Course.new('TDD', 'Emilio', 7510, 50)
 
   it 'should return list of courses' do
     mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', offers)
@@ -48,5 +52,26 @@ describe 'Guarani' do
     mock_post_request('https://astapor-api.herokuapp.com/alumnos', body, success)
     result_msg = GuaraniClient.new.inscribe('Jazmin Ferreiro', 'jaz2', 1234)
     expect(result_msg).to eq('inscripcion_creada')
+  end
+
+  it 'should return list of courses where the student is inscribed' do
+    mock_get_request('https://astapor-api.herokuapp.com/inscripciones?usernameAlumno=jaz', inscriptions)
+    inscriptions = GuaraniClient.new.inscriptions('jaz')
+    expect(inscriptions).to eq [algo3, tdd]
+  end
+
+  context 'when there are no inscriptions done by the student' do
+    it 'should return empty list' do
+      mock_get_request('https://astapor-api.herokuapp.com/inscripciones?usernameAlumno=jaz', '{"inscripciones":[]}')
+      inscriptions = GuaraniClient.new.inscriptions('jaz')
+      expect(inscriptions).to eq []
+    end
+  end
+
+  it 'should return a 2 and an 8 when the amount of approved courses is 2 and the total average is 8' do
+    mock_get_request('https://astapor-api.herokuapp.com/alumnos/promedio?usernameAlumno=jaz', average)
+    amount_approved, average = GuaraniClient.new.grades_average('jaz')
+    expect(amount_approved).to eq 2
+    expect(average).to eq 8
   end
 end

@@ -87,11 +87,12 @@ describe 'BotClient' do
   it 'should get a /oferta message and respond with an inline keyboard' do
     token = 'fake_token'
 
-    offer = '{"oferta":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"modalidad":"parciales"},{"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"modalidad":"coloquio"}]}'
+    offer = '{"oferta":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"cupo_disponible":35,"modalidad":"parciales"},
+    {"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"cupo_disponible":50,"modalidad":"coloquio"}]}'
 
     get_updates(token, '/oferta')
     mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', offer)
-    options = '{"inline_keyboard":[[{"text":"Algo3","callback_data":"7507"}],[{"text":"TDD","callback_data":"7510"}]]}'
+    options = '{"inline_keyboard":[[{"text":"Algo3 Cupos Disponibles: 35","callback_data":"7507"}],[{"text":"TDD Cupos Disponibles: 50","callback_data":"7510"}]]}'
     send_options(token, 'Oferta academica', options)
 
     app = BotClient.new(token)
@@ -109,6 +110,69 @@ describe 'BotClient' do
       mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', offer)
 
       send_message(token, 'No hay materias disponibles')
+
+      app = BotClient.new(token)
+
+      app.run_once
+    end
+  end
+
+  it 'should get a /inscripciones message and respond with listed messages' do
+    token = 'fake_token'
+
+    inscriptions = '{"inscripciones":[{"nombre":"Algo3","codigo":7507,"docente":"Fontela","cupo":50,"modalidad":"parciales"},
+    {"nombre":"TDD","codigo":7510,"docente":"Emilio","cupo":60,"modalidad":"coloquio"}]}'
+
+    get_updates(token, '/inscripciones')
+    mock_get_request('https://astapor-api.herokuapp.com/inscripciones?usernameAlumno=jaz', inscriptions)
+    send_message(token, 'Inscripciones realizadas: Algo3, TDD')
+
+    app = BotClient.new(token)
+
+    app.run_once
+  end
+
+  context 'when there are no inscriptions done' do
+    it 'should return a message' do
+      token = 'fake_token'
+
+      inscriptions = '{"inscripciones":[]}'
+
+      get_updates(token, '/inscripciones')
+      mock_get_request('https://astapor-api.herokuapp.com/inscripciones?usernameAlumno=jaz', inscriptions)
+
+      send_message(token, 'No hay inscripciones realizadas en este momento')
+
+      app = BotClient.new(token)
+
+      app.run_once
+    end
+  end
+
+  it 'should get a /promedio message and respond with a message' do
+    token = 'fake_token'
+
+    average = '{"materias_aprobadas":2,"nota_promedio":8}'
+
+    get_updates(token, '/promedio')
+    mock_get_request('https://astapor-api.herokuapp.com/alumnos/promedio?usernameAlumno=jaz', average)
+    send_message(token, 'Cantidad de materias aprobadas 2, promedio general 8')
+
+    app = BotClient.new(token)
+
+    app.run_once
+  end
+
+  context 'when there are no approved courses' do
+    it 'should return a message' do
+      token = 'fake_token'
+
+      average = '{"materias_aprobadas":0,"nota_promedio":"nil"}'
+
+      get_updates(token, '/promedio')
+      mock_get_request('https://astapor-api.herokuapp.com/alumnos/promedio?usernameAlumno=jaz', average)
+
+      send_message(token, 'Cantidad de materias aprobadas 0')
 
       app = BotClient.new(token)
 
