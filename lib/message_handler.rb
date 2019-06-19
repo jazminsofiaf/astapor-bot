@@ -42,12 +42,16 @@ module MessageHandler
     end
   end
 
+  def first_word(phrase)
+    phrase.split(' ')[0]
+  end
+
   private
 
   def find_handler_for(message)
     case message
     when Telegram::Bot::Types::Message
-      MessageHandler.message_handlers[message.text]
+      MessageHandler.message_handlers[first_word(message.text)]
     when Telegram::Bot::Types::CallbackQuery
       MessageHandler.callback_query_handlers[message.message.text]
     end

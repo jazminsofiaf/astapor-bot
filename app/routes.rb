@@ -54,6 +54,10 @@ class Routes
     end
   end
 
+  on_message '/estado' do |bot, message|
+    # TODO
+  end
+
   on_message '/promedio' do |bot, message|
     amount_approved, average = GuaraniClient.new.grades_average(message.from.username)
     if amount_approved.zero?

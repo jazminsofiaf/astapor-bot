@@ -37,7 +37,12 @@ class GuaraniClient
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get COURSE_PATH, usernameAlumno: user_name
     courses = JSON.parse(response.body)[OFFER_KEY]
-    courses.map { |course| Astapor::Course.new(course[SUBJECT_KEY], course[TEACHER_KEY], course[CODE_KEY], course[QUOTA_KEY]) }
+    courses.map do |course|
+      Astapor::Course.new(course[SUBJECT_KEY],
+                          course[TEACHER_KEY],
+                          course[CODE_KEY],
+                          course[QUOTA_KEY])
+    end
   end
 
   def inscriptions(user_name)
