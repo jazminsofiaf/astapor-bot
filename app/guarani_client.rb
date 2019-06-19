@@ -42,7 +42,7 @@ class GuaraniClient
     begin
       courses = JSON.parse(response.body)[OFFER_KEY]
     rescue JSON::ParserError
-      raise AstaporApiError("error at parsing offers body:#{response.body}")
+      raise AstaporApiError.new("error at parsing offers body:#{response.body}")
     end
     courses.map do |course|
       Astapor::Course.new(course[SUBJECT_KEY],
@@ -66,7 +66,7 @@ class GuaraniClient
     begin
       inscriptions = JSON.parse(response.body)[INSCRIPTIONS_KEY]
     rescue JSON::ParserError
-      raise AstaporApiError("error at parsing inscriptions body:#{response.body}")
+      raise AstaporApiError.new("error at parsing inscriptions body:#{response.body}")
     end
     inscriptions.map { |course| Astapor::Course.new(course[SUBJECT_KEY], course[TEACHER_KEY], course[CODE_KEY]) }
   end
@@ -79,7 +79,7 @@ class GuaraniClient
       grades_av = JSON.parse(response.body)[AVERAGE_KEY]
       approved_courses = JSON.parse(response.body)[APPROVED_COURSES_KEY]
     rescue JSON::ParserError
-      raise AstaporApiError("error at parsing average body:#{response.body}")
+      raise AstaporApiError.new("error at parsing average body:#{response.body}")
     end
     [approved_courses, grades_av]
   end
