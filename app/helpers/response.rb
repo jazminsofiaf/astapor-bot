@@ -30,7 +30,7 @@ class Response
     begin
       response = JSON.parse(data)
     rescue JSON::ParserError
-      raise AstaporApiError, "error at parse status body:#{data"
+      raise AstaporApiError, "error at parse status body:#{data}"
     end
     error = response[ERROR]
     return BOT_RESPONSES[error] unless error.nil?
