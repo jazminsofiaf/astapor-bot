@@ -18,6 +18,8 @@ GRADES_AVERAGE_MSG = ', promedio general '.freeze
 
 ERROR_MESSAGE = 'Hubo un error en astapor api'.freeze
 
+CODE = 1
+
 class Routes
   include MessageHandler
 
@@ -57,7 +59,12 @@ class Routes
   end
 
   on_message '/estado' do |bot, message|
-    course_code = parameter(message.text)
+    params = message.text.split(' ')
+    if params.length < CODE + 1
+      bot.api.send_message(chat_id: message.chat.id, text: 'te falto el codigo de materia')
+      return
+    end
+    course_code = params[CODE]
     response = GuaraniClient.new.state(message.from.username, course_code)
     bot.api.send_message(chat_id: message.chat.id, text: response)
   end

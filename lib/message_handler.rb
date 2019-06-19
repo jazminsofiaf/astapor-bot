@@ -6,7 +6,6 @@ module MessageHandler
 
   DEFAULT = '_default_handler_'.freeze
   ERROR = '_error_handler_'.freeze
-  PARAM = 1
   CODE = 0
 
   # module methods
@@ -56,10 +55,6 @@ module MessageHandler
 
   def first_word(phrase)
     phrase.split(' ')[CODE]
-  end
-
-  def parameter(message)
-    message.split(' ')[PARAM]
   end
 
   private
