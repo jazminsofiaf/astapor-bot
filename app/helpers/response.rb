@@ -20,7 +20,7 @@ class Response
     begin
       response = JSON.parse(data)
     rescue JSON::ParserError
-      raise AstaporApiError.new("error at parse inscriptions body:#{response.body}")
+      raise AstaporApiError, "error at parse inscriptions body:#{response.body}"
     end
     result = response[RESULT] || response[ERROR]
     BOT_RESPONSES[result] || result
@@ -30,7 +30,7 @@ class Response
     begin
       response = JSON.parse(data)
     rescue JSON::ParserError
-      raise AstaporApiError.new("error at parse status body:#{response.body}")
+      raise AstaporApiError, "error at parse status body:#{response.body}"
     end
     error = response[ERROR]
     return BOT_RESPONSES[error] unless error.nil?
