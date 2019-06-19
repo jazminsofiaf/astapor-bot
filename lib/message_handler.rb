@@ -25,8 +25,12 @@ module MessageHandler
   def handle(bot, message)
     # instance methods of any class that include it
     handler = find_handler_for(message) || default_handler(message)
-
-    handler.call(bot, message)
+    begin
+      handler.call(bot, message)
+    rescue AstaporApiError => e
+      puts e.msg
+      default_handler(message).call(bot, message)
+    end
   end
 
   module ClazzMethods
@@ -57,9 +61,7 @@ module MessageHandler
   def find_handler_for(message)
     case message
     when Telegram::Bot::Types::Message
-      palabra = first_word(message.text)
-      puts "la primer palabra es #{palabra}"
-      MessageHandler.message_handlers[palabra]
+      MessageHandler.message_handlers[first_word(message.text)]
     when Telegram::Bot::Types::CallbackQuery
       MessageHandler.callback_query_handlers[message.message.text]
     end

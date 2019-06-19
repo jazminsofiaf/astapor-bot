@@ -28,3 +28,5 @@ RSpec/MessageSpies:
   EnforcedStyle: receive
 RSpec/MultipleExpectations:
   Max: 3
+Metrics/AbcSize:
+  Max: 20

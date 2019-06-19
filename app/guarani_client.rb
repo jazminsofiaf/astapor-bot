@@ -4,6 +4,7 @@ require 'telegram/bot'
 require_relative '../app/models/course'
 require_relative '../app/helpers/inscription'
 require_relative '../app/helpers/response'
+require_relative '../app/helpers/astapor_api_error'
 class GuaraniClient
   GUARANI_URL = 'https://astapor-api.herokuapp.com'.freeze
   WELCOME_PATH = '/welcome_message'.freeze
@@ -37,7 +38,12 @@ class GuaraniClient
   def courses(user_name)
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get COURSE_PATH, usernameAlumno: user_name
-    courses = JSON.parse(response.body)[OFFER_KEY]
+    @logger.debug "offers status: #{response.status}, response #{response.body}"
+    begin
+      courses = JSON.parse(response.body)[OFFER_KEY]
+    rescue JSON::ParserError
+      raise AstaporApiError("error at parsing offers body:#{response.body}")
+    end
     courses.map do |course|
       Astapor::Course.new(course[SUBJECT_KEY],
                           course[TEACHER_KEY],
@@ -49,22 +55,32 @@ class GuaraniClient
   def state(user_name, code)
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get STATUS_PATH, codigoMateria: code, usernameAlumno: user_name
+    @logger.debug "status  status: #{response.status}, response #{response.body}"
     Response.new.handle_status(response.body)
   end
 
   def inscriptions(user_name)
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get INSCRIPTIONS_PATH, usernameAlumno: user_name
-    @logger.debug "inscription response #{response}"
-    inscriptions = JSON.parse(response.body)[INSCRIPTIONS_KEY]
+    @logger.debug "inscription status: #{response.status}, response: #{response.body}"
+    begin
+      inscriptions = JSON.parse(response.body)[INSCRIPTIONS_KEY]
+    rescue JSON::ParserError
+      raise AstaporApiError("error at parsing inscriptions body:#{response.body}")
+    end
     inscriptions.map { |course| Astapor::Course.new(course[SUBJECT_KEY], course[TEACHER_KEY], course[CODE_KEY]) }
   end
 
   def grades_average(user_name)
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get GRADES_AVERAGE_PATH, usernameAlumno: user_name
-    grades_av = JSON.parse(response.body)[AVERAGE_KEY]
-    approved_courses = JSON.parse(response.body)[APPROVED_COURSES_KEY]
+    @logger.debug "average status: #{response.status}, response: #{response.body}"
+    begin
+      grades_av = JSON.parse(response.body)[AVERAGE_KEY]
+      approved_courses = JSON.parse(response.body)[APPROVED_COURSES_KEY]
+    rescue JSON::ParserError
+      raise AstaporApiError("error at parsing average body:#{response.body}")
+    end
     [approved_courses, grades_av]
   end
 

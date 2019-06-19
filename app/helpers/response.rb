@@ -16,14 +16,22 @@ class Response
   }.freeze
 
   def handle_response(data)
-    response = JSON.parse(data)
+    begin
+      response = JSON.parse(data)
+    rescue JSON::ParserError
+      raise AstaporApiError("error at parse inscriptions body:#{response.body}")
+    end
     result = response[RESULT] || response[ERROR]
     BOT_RESPONSES[result] || result
   end
 
   def handle_status(data)
-    response = JSON.parse(data)
-    error =  response[ERROR]
+    begin
+      response = JSON.parse(data)
+    rescue JSON::ParserError
+      raise AstaporApiError("error at parse status body:#{response.body}")
+    end
+    error = response[ERROR]
     return BOT_RESPONSES[error] unless error.nil?
 
     status = response[STATE]
