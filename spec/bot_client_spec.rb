@@ -92,7 +92,7 @@ describe 'BotClient' do
 
     get_updates(token, '/oferta')
     mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', offer)
-    options = '{"inline_keyboard":[[{"text":"Algo3 Cupos Disponibles: 35","callback_data":"7507"}],[{"text":"TDD Cupos Disponibles: 50","callback_data":"7510"}]]}'
+    options = '{"inline_keyboard":[[{"text":"Algo3 cupos disponibles: 35","callback_data":"7507"}],[{"text":"TDD cupos disponibles: 50","callback_data":"7510"}]]}'
     send_options(token, 'Oferta academica', options)
 
     app = BotClient.new(token)

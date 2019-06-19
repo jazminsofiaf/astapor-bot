@@ -57,7 +57,9 @@ module MessageHandler
   def find_handler_for(message)
     case message
     when Telegram::Bot::Types::Message
-      MessageHandler.message_handlers[first_word(message.text)]
+      palabra = first_word(message.text)
+      puts "la primer palabra es #{palabra}"
+      MessageHandler.message_handlers[palabra]
     when Telegram::Bot::Types::CallbackQuery
       MessageHandler.callback_query_handlers[message.message.text]
     end

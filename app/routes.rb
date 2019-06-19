@@ -31,7 +31,7 @@ class Routes
       bot.api.send_message(chat_id: message.chat.id, text: EMPTY_COURSES_MSG)
     else
       key_board = courses.map do |course|
-        Telegram::Bot::Types::InlineKeyboardButton.new(text: course.name + ' Cupos Disponibles: ' + course.available_quota.to_s,
+        Telegram::Bot::Types::InlineKeyboardButton.new(text: "#{course.name} cupos disponibles: #{course.available_quota}",
                                                        callback_data: course.code.to_s)
       end
 
@@ -48,7 +48,7 @@ class Routes
     else
       msg = INSCRIPTIONS_MSG
       inscriptions.each do |course|
-        msg += ' ' + course.name + ','
+        msg += " #{course.name},"
       end
       bot.api.send_message(chat_id: message.chat.id, text: msg[0...msg.length - 1])
     end
