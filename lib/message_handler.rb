@@ -4,6 +4,8 @@ module MessageHandler
   @callback_query_handlers = {}
 
   DEFAULT = '_default_handler_'.freeze
+  PARAM = 1
+  CODE = 0
 
   # module methods
   def self.message_handlers
@@ -43,7 +45,11 @@ module MessageHandler
   end
 
   def first_word(phrase)
-    phrase.split(' ')[0]
+    phrase.split(' ')[CODE]
+  end
+
+  def parameter(message)
+    message.split(' ')[PARAM]
   end
 
   private
