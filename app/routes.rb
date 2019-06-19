@@ -57,7 +57,7 @@ class Routes
   end
 
   on_message '/estado' do |bot, message|
-    course_code = param(message.text)
+    course_code = parameter(message.text)
     response = GuaraniClient.new.state(message.from.username, course_code)
     bot.api.send_message(chat_id: message.chat.id, text: response)
   end
