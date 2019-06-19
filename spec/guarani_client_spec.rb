@@ -74,4 +74,25 @@ describe 'Guarani' do
     expect(amount_approved).to eq 2
     expect(average).to eq 8
   end
+
+  it 'should return error message if sth goes wrong' do
+    mock_get_request('https://astapor-api.herokuapp.com/materias/estado?codigoMateria=1001&usernameAlumno=jaz',
+                     '{"error":"MATERIA_NO_EXISTE"}')
+    result_msg = GuaraniClient.new.state('jaz', '1001')
+    expect(result_msg).to eq("Opsi, esa materia no existe  \u{1F616}")
+  end
+
+  it 'should return pass status for course' do
+    mock_get_request('https://astapor-api.herokuapp.com/materias/estado?codigoMateria=1001&usernameAlumno=jaz',
+                     { estado: 'APROBADO', nota_final: 10 }.to_json)
+    result_msg = GuaraniClient.new.state('jaz', '1001')
+    expect(result_msg).to eq("Felicitaciones \u{1F44D} aprobaste con un 10")
+  end
+
+  it 'should return fail status for course' do
+    mock_get_request('https://astapor-api.herokuapp.com/materias/estado?codigoMateria=1001&usernameAlumno=jaz',
+                     { estado: 'DESAPROBADO', nota_final: 5 }.to_json)
+    result_msg = GuaraniClient.new.state('jaz', '1001')
+    expect(result_msg).to eq("Uy \u{1F44E} desaprobaste con un 5")
+  end
 end

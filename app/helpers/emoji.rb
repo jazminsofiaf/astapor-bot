@@ -4,7 +4,10 @@ class Emoji
     books: "\u{1F4DA}",
     tada: "\u{1F389}",
     no_good: "\u{1F645}",
-    x: "\u{274C}"
+    x: "\u{274C}",
+    confounded: "\u{1F616}",
+    up: "\u{1F44D}",
+    down: "\u{1F44E}"
   }.freeze
 
   def self.code(name)

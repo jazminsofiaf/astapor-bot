@@ -10,6 +10,7 @@ class GuaraniClient
   COURSE_PATH = '/materias'.freeze
   INSCRIPTION_PATH = '/alumnos'.freeze
   INSCRIPTIONS_PATH = '/inscripciones'.freeze
+  STATUS_PATH = '/materias/estado'.freeze
   GRADES_AVERAGE_PATH = '/alumnos/promedio'.freeze
 
   SUBJECT_KEY = 'nombre'.freeze
@@ -45,6 +46,12 @@ class GuaraniClient
     end
   end
 
+  def state(user_name, code)
+    connection = Faraday.new(url: GUARANI_URL)
+    response = connection.get STATUS_PATH, codigoMateria: code, usernameAlumno: user_name
+    Response.new.handle_status(response.body)
+  end
+
   def inscriptions(user_name)
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get INSCRIPTIONS_PATH, usernameAlumno: user_name
@@ -69,6 +76,6 @@ class GuaraniClient
       req.headers[CONTENT_TYPE] = APPLICATION_JSON
       req.body = inscription_body
     end
-    Response.new(response.body).msg
+    Response.new.handle_response(response.body)
   end
 end
