@@ -1,9 +1,11 @@
 require_relative '../app/guarani_client'
+require_relative '../app/helpers/astapor_api_error'
 module MessageHandler
   @message_handlers = {}
   @callback_query_handlers = {}
 
   DEFAULT = '_default_handler_'.freeze
+  ERROR = '_error_handler_'.freeze
   PARAM = 1
   CODE = 0
 
@@ -29,7 +31,7 @@ module MessageHandler
       handler.call(bot, message)
     rescue AstaporApiError => e
       puts e.msg
-      default_handler(message).call(bot, message)
+      error_handle(e.msg).call(bot, message)
     end
   end
 
@@ -45,6 +47,10 @@ module MessageHandler
 
     def default(&block)
       MessageHandler.message_handlers[DEFAULT] = block
+    end
+
+    def error(&block)
+      MessageHandler.message_handlers[ERROR] = block
     end
   end
 
@@ -69,6 +75,11 @@ module MessageHandler
 
   def default_handler(message)
     MessageHandler.message_handlers[DEFAULT] ||
+      (raise "Unkown message [#{message.inspect}]. Please define new handler or a default handler")
+  end
+
+  def error_handle(message)
+    MessageHandler.message_handlers[ERROR] ||
       (raise "Unkown message [#{message.inspect}]. Please define new handler or a default handler")
   end
 end

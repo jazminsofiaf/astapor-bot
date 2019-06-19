@@ -1,4 +1,5 @@
 require_relative 'emoji'
+require_relative 'astapor_api_error'
 class Response
   RESULT = 'resultado'.freeze
   ERROR = 'error'.freeze

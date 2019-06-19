@@ -16,6 +16,8 @@ APPROVED_COURSES_MSG = 'Cantidad de materias aprobadas '.freeze
 
 GRADES_AVERAGE_MSG = ', promedio general '.freeze
 
+ERROR_MESSAGE = 'Hubo un error en astapor api'.freeze
+
 class Routes
   include MessageHandler
 
@@ -79,5 +81,9 @@ class Routes
 
   default do |bot, message|
     bot.api.send_message(chat_id: message.chat.id, text: DEFAULT_MESSAGE)
+  end
+
+  error do |bot, message|
+    bot.api.send_message(chat_id: message.chat.id, text: ERROR_MESSAGE)
   end
 end
