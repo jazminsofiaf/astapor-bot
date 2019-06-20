@@ -71,7 +71,7 @@ class Routes
       bot.api.send_message(chat_id: message.chat.id, text: 'te falto el codigo de materia')
       return
     end
-    course_code = params[CODE]
+    course_code = params[2]
     puts "El curso es #{course_code}"
     response = GuaraniClient.new.state(message.from.username, course_code)
     bot.api.send_message(chat_id: message.chat.id, text: response)
