@@ -40,7 +40,7 @@ class GuaraniClient
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get COURSE_PATH, usernameAlumno: user_name
     @logger.debug "offers status: #{response.status}, response #{response.body}"
-    raise AstaporApiError, "error at parsing offers body:#{response.body}" unless response.status == 200
+    raise AstaporApiError, "error at parsing offers body:#{response.body}" unless response.status >= 500
 
     courses = JSON.parse(response.body)[OFFER_KEY]
     courses.map do |course|
@@ -55,7 +55,7 @@ class GuaraniClient
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get STATUS_PATH, codigoMateria: code.to_i, usernameAlumno: user_name
     @logger.debug "status  status: #{response.status}, response #{response.body}"
-    raise AstaporApiError, "error at state body:#{response.body}" unless response.status == 200
+    raise AstaporApiError, "error at state body:#{response.body}" unless response.status >= 500
 
     Response.new.handle_status(response.body)
   end
@@ -64,7 +64,7 @@ class GuaraniClient
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get INSCRIPTIONS_PATH, usernameAlumno: user_name
     @logger.debug "inscription status: #{response.status}, response: #{response.body}"
-    raise AstaporApiError, "error inscriptions body:#{response.body}" unless response.status == 200
+    raise AstaporApiError, "error inscriptions body:#{response.body}" unless response.status >= 500
 
     inscriptions = JSON.parse(response.body)[INSCRIPTIONS_KEY]
     inscriptions.map { |course| Astapor::Course.new(course[SUBJECT_KEY], course[TEACHER_KEY], course[CODE_KEY]) }
@@ -74,7 +74,7 @@ class GuaraniClient
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get GRADES_AVERAGE_PATH, usernameAlumno: user_name
     @logger.debug "average status: #{response.status}, response: #{response.body}"
-    raise AstaporApiError, "error average body:#{response.body}" unless response.status == 200
+    raise AstaporApiError, "error average body:#{response.body}" unless response.status >= 500
 
     grades_av = JSON.parse(response.body)[AVERAGE_KEY]
     approved_courses = JSON.parse(response.body)[APPROVED_COURSES_KEY]
