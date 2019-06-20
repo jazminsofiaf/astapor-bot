@@ -59,7 +59,10 @@ class GuaraniClient
 
   def state(user_name, code)
     connection = Faraday.new(url: GUARANI_URL)
-    response = connection.get STATUS_PATH, codigoMateria: code, usernameAlumno: user_name
+    response = connection.get do |req|
+      req.url  STATUS_PATH, codigoMateria: code, usernameAlumno: user_name
+      req.headers[API_TOKEN] = @token
+    end
     @logger.debug "status  status: #{response.status}, response #{response.body}"
     raise AstaporApiError, "error at state body:#{response.body}" unless response.status < 500
 
@@ -68,7 +71,10 @@ class GuaraniClient
 
   def inscriptions(user_name)
     connection = Faraday.new(url: GUARANI_URL)
-    response = connection.get INSCRIPTIONS_PATH, usernameAlumno: user_name
+    response = connection.get do |req|
+      req.url  INSCRIPTIONS_PATH, usernameAlumno: user_name
+      req.headers[API_TOKEN] = @token
+    end
     @logger.debug "inscription status: #{response.status}, response: #{response.body}"
     raise AstaporApiError, "error inscriptions body:#{response.body}" unless response.status < 500
 
@@ -78,7 +84,10 @@ class GuaraniClient
 
   def grades_average(user_name)
     connection = Faraday.new(url: GUARANI_URL)
-    response = connection.get GRADES_AVERAGE_PATH, usernameAlumno: user_name
+    response = connection.get do |req|
+      req.url  GRADES_AVERAGE_PATH, usernameAlumno: user_name
+      req.headers[API_TOKEN] = @token
+    end
     @logger.debug "average status: #{response.status}, response: #{response.body}"
     raise AstaporApiError, "error average body:#{response.body}" unless response.status < 500
 
@@ -94,6 +103,7 @@ class GuaraniClient
     response = connection.post do |req|
       req.url INSCRIPTION_PATH
       req.headers[CONTENT_TYPE] = APPLICATION_JSON
+      req.headers[API_TOKEN] = @token
       req.body = inscription_body
     end
     Response.new.handle_response(response.body)
