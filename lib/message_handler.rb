@@ -53,6 +53,8 @@ module MessageHandler
   end
 
   def first_word(phrase)
+    return '' if phrase.nil?
+
     phrase.split(' ')[CODE]
   end
 
