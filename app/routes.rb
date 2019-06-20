@@ -99,7 +99,7 @@ class Routes
   end
 
   on_error do |bot, message, error|
-    error_msg = ERROR_MSG[error.class] || error.msg || DEFAULT_ERROR_MESSAGE
+    error_msg = ERROR_MSG[error.class] ||  DEFAULT_ERROR_MESSAGE
     bot.api.send_message(chat_id: message.chat.id, text: error_msg)
   end
 end
