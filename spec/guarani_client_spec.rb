@@ -77,7 +77,7 @@ describe 'Guarani' do
 
   it 'should return error message if sth goes wrong' do
     mock_get_request('https://astapor-api.herokuapp.com/materias/estado?codigoMateria=1001&usernameAlumno=jaz',
-                     '{"error":"MATERIA_NO_EXISTE"}')
+                     { error: 'MATERIA_NO_EXISTE' }.to_json)
     result_msg = GuaraniClient.new.state('jaz', '1001')
     expect(result_msg).to eq("Opsi, esa materia no existe  \u{1F616}")
   end

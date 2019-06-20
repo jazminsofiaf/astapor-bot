@@ -53,7 +53,7 @@ class GuaraniClient
 
   def state(user_name, code)
     connection = Faraday.new(url: GUARANI_URL)
-    response = connection.get STATUS_PATH, codigoMateria: code, usernameAlumno: user_name
+    response = connection.get STATUS_PATH, codigoMateria: code.to_i, usernameAlumno: user_name
     @logger.debug "status  status: #{response.status}, response #{response.body}"
     raise AstaporApiError, "error at state body:#{response.body}" unless response.status == 200
 
