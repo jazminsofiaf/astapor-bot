@@ -28,9 +28,9 @@ module MessageHandler
     handler = find_handler_for(message) || default_handler(message)
     begin
       handler.call(bot, message)
-    rescue AstaporApiError => e
+    rescue StandardError => e
       puts e.msg
-      error_handle(e.msg).call(bot, message)
+      error_handle(e).call(bot, message, e)
     end
   end
 
@@ -48,7 +48,7 @@ module MessageHandler
       MessageHandler.message_handlers[DEFAULT] = block
     end
 
-    def error(&block)
+    def on_error(&block)
       MessageHandler.message_handlers[ERROR] = block
     end
   end
@@ -73,8 +73,8 @@ module MessageHandler
       (raise "Unkown message [#{message.inspect}]. Please define new handler or a default handler")
   end
 
-  def error_handle(message)
+  def error_handle(error)
     MessageHandler.message_handlers[ERROR] ||
-      (raise "Unkown message [#{message.inspect}]. Please define new handler or a default handler")
+      (raise "Error [#{error.msg}] raise when handling message")
   end
 end

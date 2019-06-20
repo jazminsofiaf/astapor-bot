@@ -3,6 +3,8 @@ require_relative '../lib/message_handler'
 require_relative 'guarani_client'
 require 'telegram/bot'
 require_relative '../app/helpers/emoji'
+require 'json'
+require_relative '../app/helpers/astapor_api_error'
 
 DEFAULT_MESSAGE = "Perdon! No se como ayudarte con eso #{Emoji.code(:speak_no_evil)}" \
                    'prueba preguntando de otra forma!'.freeze
@@ -16,7 +18,11 @@ APPROVED_COURSES_MSG = 'Cantidad de materias aprobadas '.freeze
 
 GRADES_AVERAGE_MSG = ', promedio general '.freeze
 
-ERROR_MESSAGE = 'Hubo un error en astapor api'.freeze
+DEFAULT_ERROR_MESSAGE = 'Hubo un error'.freeze
+
+ERROR_MSG = { JSON::ParserError => 'OUps no se como leer el mensaje de la api',
+              AstaporApiError => 'Hubo un error en la api',
+              StandardError => 'Oups, ocurrió un error' }.freeze
 
 CODE = 1
 
@@ -90,7 +96,8 @@ class Routes
     bot.api.send_message(chat_id: message.chat.id, text: DEFAULT_MESSAGE)
   end
 
-  error do |bot, message|
-    bot.api.send_message(chat_id: message.chat.id, text: ERROR_MESSAGE)
+  on_error do |bot, message, error|
+    error_msg = ERROR_MSG[error.class] || error.msg || DEFAULT_ERROR_MESSAGE
+    bot.api.send_message(chat_id: message.chat.id, text: error_msg)
   end
 end

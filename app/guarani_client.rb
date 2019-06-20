@@ -5,6 +5,7 @@ require_relative '../app/models/course'
 require_relative '../app/helpers/inscription'
 require_relative '../app/helpers/response'
 require_relative '../app/helpers/astapor_api_error'
+
 class GuaraniClient
   GUARANI_URL = 'https://astapor-api.herokuapp.com'.freeze
   WELCOME_PATH = '/welcome_message'.freeze
@@ -39,11 +40,9 @@ class GuaraniClient
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get COURSE_PATH, usernameAlumno: user_name
     @logger.debug "offers status: #{response.status}, response #{response.body}"
-    begin
-      courses = JSON.parse(response.body)[OFFER_KEY]
-    rescue JSON::ParserError
-      raise AstaporApiError, "error at parsing offers body:#{response.body}"
-    end
+    raise AstaporApiError, "error at parsing offers body:#{response.body}" unless response.status == 200
+
+    courses = JSON.parse(response.body)[OFFER_KEY]
     courses.map do |course|
       Astapor::Course.new(course[SUBJECT_KEY],
                           course[TEACHER_KEY],
@@ -56,6 +55,8 @@ class GuaraniClient
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get STATUS_PATH, codigoMateria: code, usernameAlumno: user_name
     @logger.debug "status  status: #{response.status}, response #{response.body}"
+    raise AstaporApiError, "error at state body:#{response.body}" unless response.status == 200
+
     Response.new.handle_status(response.body)
   end
 
@@ -63,11 +64,9 @@ class GuaraniClient
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get INSCRIPTIONS_PATH, usernameAlumno: user_name
     @logger.debug "inscription status: #{response.status}, response: #{response.body}"
-    begin
-      inscriptions = JSON.parse(response.body)[INSCRIPTIONS_KEY]
-    rescue JSON::ParserError
-      raise AstaporApiError, "error at parsing inscriptions body:#{response.body}"
-    end
+    raise AstaporApiError, "error inscriptions body:#{response.body}" unless response.status == 200
+
+    inscriptions = JSON.parse(response.body)[INSCRIPTIONS_KEY]
     inscriptions.map { |course| Astapor::Course.new(course[SUBJECT_KEY], course[TEACHER_KEY], course[CODE_KEY]) }
   end
 
@@ -75,12 +74,10 @@ class GuaraniClient
     connection = Faraday.new(url: GUARANI_URL)
     response = connection.get GRADES_AVERAGE_PATH, usernameAlumno: user_name
     @logger.debug "average status: #{response.status}, response: #{response.body}"
-    begin
-      grades_av = JSON.parse(response.body)[AVERAGE_KEY]
-      approved_courses = JSON.parse(response.body)[APPROVED_COURSES_KEY]
-    rescue JSON::ParserError
-      raise AstaporApiError, "error at parsing average body:#{response.body}"
-    end
+    raise AstaporApiError, "error average body:#{response.body}" unless response.status == 200
+
+    grades_av = JSON.parse(response.body)[AVERAGE_KEY]
+    approved_courses = JSON.parse(response.body)[APPROVED_COURSES_KEY]
     [approved_courses, grades_av]
   end
 
