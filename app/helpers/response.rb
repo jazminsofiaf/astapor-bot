@@ -13,7 +13,9 @@ class Response
     'INSCRIPCION_DUPLICADA' => 'Ya estas incripto',
     'MATERIA_NO_EXISTE' => "Opsi, esa materia no existe  #{Emoji.code(:confounded)}",
     'APROBADO' => "Felicitaciones #{Emoji.code(:up)} aprobaste con un",
-    'DESAPROBADO' => "Uy #{Emoji.code(:down)} desaprobaste con un"
+    'DESAPROBADO' => "Uy #{Emoji.code(:down)} desaprobaste con un",
+    'NO_INSCRIPTO' => 'No estas inscripto',
+    'EN_CURSO' => 'La estas cursando'
   }.freeze
 
   def handle_response(data)
@@ -29,6 +31,12 @@ class Response
 
     status = response[STATE]
     final_grade = response[GRADE]
+    return BOT_RESPONSES[status] if is_null?(final_grade)
+
     "#{BOT_RESPONSES[status]} #{final_grade}"
+  end
+
+  def is_null?(grade)
+    grade.nil? || (grade == 'nil') || (grade == 'null') || grade.to_s.empty?
   end
 end

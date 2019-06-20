@@ -29,7 +29,6 @@ module MessageHandler
     begin
       handler.call(bot, message)
     rescue StandardError => e
-      puts e.msg
       error_handle(e).call(bot, message, e)
     end
   end
@@ -75,6 +74,6 @@ module MessageHandler
 
   def error_handle(error)
     MessageHandler.message_handlers[ERROR] ||
-      (raise "Error [#{error.msg}] raise when handling message")
+      (raise "Error [#{error}] raise when handling message")
   end
 end

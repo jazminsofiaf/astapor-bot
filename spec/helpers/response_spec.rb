@@ -30,5 +30,15 @@ describe 'Response' do
       res = Response.new.handle_status({ estado: 'DESAPROBADO', nota_final: 1 }.to_json)
       expect(res).to eq("Uy \u{1F44E} desaprobaste con un 1")
     end
+
+    it 'parse not enrolled in' do
+      res = Response.new.handle_status({ estado: 'NO_INSCRIPTO', nota_final: nil }.to_json)
+      expect(res).to eq('No estas inscripto')
+    end
+
+    it 'parse under way' do
+      res = Response.new.handle_status({ 'estado': 'EN_CURSO', 'nota_final': 'null' }.to_json)
+      expect(res).to eq('La estas cursando')
+    end
   end
 end

@@ -167,12 +167,27 @@ describe 'BotClient' do
     it 'should return a message' do
       token = 'fake_token'
 
-      average = '{"materias_aprobadas":0,"nota_promedio":"nil"}'
+      average = '{"materias_aprobadas":0,"nota_promedio":null}'
 
       get_updates(token, '/promedio')
       mock_get_request('https://astapor-api.herokuapp.com/alumnos/promedio?usernameAlumno=jaz', average)
 
       send_message(token, 'Cantidad de materias aprobadas 0')
+
+      app = BotClient.new(token)
+
+      app.run_once
+    end
+  end
+
+  context 'when there is a pase exception' do
+    it 'should rescue' do
+      token = 'fake_token'
+      average = 'esto genera un error de parseo'
+      get_updates(token, '/promedio')
+      mock_get_request('https://astapor-api.herokuapp.com/alumnos/promedio?usernameAlumno=jaz', average)
+
+      send_message(token, 'OUps no se como leer el mensaje de la api')
 
       app = BotClient.new(token)
 
