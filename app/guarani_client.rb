@@ -25,9 +25,11 @@ class GuaraniClient
   APPROVED_COURSES_KEY = 'materias_aprobadas'.freeze
   CONTENT_TYPE = 'Content-Type'.freeze
   APPLICATION_JSON = 'application/json'.freeze
+  API_TOKEN = 'api_token'.freeze
 
-  def initialize
+  def initialize(token)
     @logger = Logger.new(STDOUT)
+    @token = token
   end
 
   def welcome_message
@@ -38,7 +40,11 @@ class GuaraniClient
 
   def courses(user_name)
     connection = Faraday.new(url: GUARANI_URL)
-    response = connection.get COURSE_PATH, usernameAlumno: user_name
+    response = connection.get do |req|
+      req.url COURSE_PATH, usernameAlumno: user_name
+      req.headers[API_TOKEN] = @token
+    end
+
     @logger.debug "offers status: #{response.status}, response #{response.body}"
     raise AstaporApiError, "error at parsing offers body:#{response.body}" unless response.status < 500
 

@@ -4,7 +4,7 @@ class BotClient
   def initialize(token = ENV['TELEGRAM_TOKEN'])
     @token = token
     @logger = Logger.new(STDOUT)
-    @guarani = GuaraniClient.new
+    @guarani = GuaraniClient.new(token)
   end
 
   def handle_message(message, bot)

@@ -28,13 +28,13 @@ class Routes
   include MessageHandler
 
   on_message '/start' do |bot, message|
-    response = GuaraniClient.new.welcome_message
+    response = GuaraniClient.new(bot.api.token).welcome_message
     bot.api.send_message(chat_id: message.chat.id,
                          text: "#{response} #{message.from.first_name} #{Emoji.code(:books)}")
   end
 
   on_message '/oferta' do |bot, message|
-    courses = GuaraniClient.new.courses(message.from.username)
+    courses = GuaraniClient.new(bot.api.token).courses(message.from.username)
     if courses.empty?
       bot.api.send_message(chat_id: message.chat.id, text: EMPTY_COURSES_MSG)
     else
@@ -50,7 +50,7 @@ class Routes
   end
 
   on_message '/inscripciones' do |bot, message|
-    inscriptions = GuaraniClient.new.inscriptions(message.from.username)
+    inscriptions = GuaraniClient.new(bot.api.token).inscriptions(message.from.username)
     if inscriptions.empty?
       bot.api.send_message(chat_id: message.chat.id, text: EMPTY_INSCRIPTIONS_MSG)
     else
@@ -73,12 +73,12 @@ class Routes
     puts "el indice es #{code_index}"
     course_code = message.text.split(' ')[code_index]
     puts "El curso es #{course_code}"
-    response = GuaraniClient.new.state(message.from.username, course_code)
+    response = GuaraniClient.new(bot.api.token).state(message.from.username, course_code)
     bot.api.send_message(chat_id: message.chat.id, text: response)
   end
 
   on_message '/promedio' do |bot, message|
-    amount_approved, average = GuaraniClient.new.grades_average(message.from.username)
+    amount_approved, average = GuaraniClient.new(bot.api.token).grades_average(message.from.username)
     if amount_approved.zero?
       bot.api.send_message(chat_id: message.chat.id, text: APPROVED_COURSES_MSG + amount_approved.to_s)
     else
@@ -90,7 +90,7 @@ class Routes
     puts "response to oferta academica: #{message.data}"
     student_name = message.from.first_name + ' ' + message.from.last_name
 
-    response = Astapor::Course.handle_response(student_name, message.from.username, message.data)
+    response = Astapor::Course.handle_response(bot.api.token, student_name, message.from.username, message.data)
     bot.api.send_message(chat_id: message.message.chat.id, text: response)
   end
 

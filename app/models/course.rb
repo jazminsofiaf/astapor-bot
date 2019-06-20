@@ -17,8 +17,8 @@ module Astapor
         (other.teacher == teacher)
     end
 
-    def self.handle_response(student_name, user_name, course_code)
-      GuaraniClient.new.inscribe(student_name, user_name, course_code)
+    def self.handle_response(token, student_name, user_name, course_code)
+      GuaraniClient.new(token).inscribe(student_name, user_name, course_code)
     end
   end
 end

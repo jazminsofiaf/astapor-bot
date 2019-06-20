@@ -16,7 +16,7 @@ describe 'Guarani' do
 
   it 'should return welcome message' do
     mock_get_request('https://astapor-api.herokuapp.com/welcome_message', 'hola')
-    guarani_client = GuaraniClient.new
+    guarani_client = GuaraniClient.new('fake_token')
     welcome_message = guarani_client.welcome_message
     expect(welcome_message).to eq 'hola'
   end
@@ -32,14 +32,14 @@ describe 'Guarani' do
 
   it 'should return list of courses' do
     mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', offers)
-    courses = GuaraniClient.new.courses('jaz')
+    courses = GuaraniClient.new('fake_token').courses('jaz')
     expect(courses).to eq [algo3, tdd]
   end
 
   context 'when there is no offer available' do
     it 'should return empty list' do
       mock_get_request('https://astapor-api.herokuapp.com/materias?usernameAlumno=jaz', '{"oferta":[]}')
-      courses = GuaraniClient.new.courses('jaz')
+      courses = GuaraniClient.new('fake_token').courses('jaz')
       expect(courses).to eq []
     end
   end
@@ -50,27 +50,27 @@ describe 'Guarani' do
              'username_alumno' => 'jaz2' }.to_json
     success = { "resultado": 'inscripcion_creada' }.to_json
     mock_post_request('https://astapor-api.herokuapp.com/alumnos', body, success)
-    result_msg = GuaraniClient.new.inscribe('Jazmin Ferreiro', 'jaz2', 1234)
+    result_msg = GuaraniClient.new('fake_token').inscribe('Jazmin Ferreiro', 'jaz2', 1234)
     expect(result_msg).to eq('inscripcion_creada')
   end
 
   it 'should return list of courses where the student is inscribed' do
     mock_get_request('https://astapor-api.herokuapp.com/inscripciones?usernameAlumno=jaz', inscriptions)
-    inscriptions = GuaraniClient.new.inscriptions('jaz')
+    inscriptions = GuaraniClient.new('fake_token').inscriptions('jaz')
     expect(inscriptions).to eq [algo3, tdd]
   end
 
   context 'when there are no inscriptions done by the student' do
     it 'should return empty list' do
       mock_get_request('https://astapor-api.herokuapp.com/inscripciones?usernameAlumno=jaz', '{"inscripciones":[]}')
-      inscriptions = GuaraniClient.new.inscriptions('jaz')
+      inscriptions = GuaraniClient.new('fake_token').inscriptions('jaz')
       expect(inscriptions).to eq []
     end
   end
 
   it 'should return a 2 and an 8 when the amount of approved courses is 2 and the total average is 8' do
     mock_get_request('https://astapor-api.herokuapp.com/alumnos/promedio?usernameAlumno=jaz', average)
-    amount_approved, average = GuaraniClient.new.grades_average('jaz')
+    amount_approved, average = GuaraniClient.new('fake_token').grades_average('jaz')
     expect(amount_approved).to eq 2
     expect(average).to eq 8
   end
@@ -78,35 +78,35 @@ describe 'Guarani' do
   it 'should return error message if sth goes wrong' do
     mock_get_request('https://astapor-api.herokuapp.com/materias/estado?codigoMateria=1001&usernameAlumno=jaz',
                      { error: 'MATERIA_NO_EXISTE' }.to_json)
-    result_msg = GuaraniClient.new.state('jaz', '1001')
+    result_msg = GuaraniClient.new('fake_token').state('jaz', '1001')
     expect(result_msg).to eq("Opsi, esa materia no existe  \u{1F616}")
   end
 
   it 'should return pass status for course' do
     mock_get_request('https://astapor-api.herokuapp.com/materias/estado?codigoMateria=1001&usernameAlumno=jaz',
                      { estado: 'APROBADO', nota_final: 10 }.to_json)
-    result_msg = GuaraniClient.new.state('jaz', '1001')
+    result_msg = GuaraniClient.new('fake_token').state('jaz', '1001')
     expect(result_msg).to eq("Felicitaciones \u{1F44D} aprobaste con un 10")
   end
 
   it 'should return fail status for course' do
     mock_get_request('https://astapor-api.herokuapp.com/materias/estado?codigoMateria=1001&usernameAlumno=jaz',
                      { estado: 'DESAPROBADO', nota_final: 5 }.to_json)
-    result_msg = GuaraniClient.new.state('jaz', '1001')
+    result_msg = GuaraniClient.new('fake_token').state('jaz', '1001')
     expect(result_msg).to eq("Uy \u{1F44E} desaprobaste con un 5")
   end
 
   it 'should return not enrolled in' do
     mock_get_request('https://astapor-api.herokuapp.com/materias/estado?codigoMateria=1001&usernameAlumno=jaz',
                      { estado: 'NO_INSCRIPTO', nota_final: nil }.to_json)
-    result_msg = GuaraniClient.new.state('jaz', '1001')
+    result_msg = GuaraniClient.new('fake_token').state('jaz', '1001')
     expect(result_msg).to eq('No estas inscripto')
   end
 
   it 'should return on going' do
     mock_get_request('https://astapor-api.herokuapp.com/materias/estado?codigoMateria=1001&usernameAlumno=jaz',
                      { estado: 'EN_CURSO', nota_final: 'null' }.to_json)
-    result_msg = GuaraniClient.new.state('jaz', '1001')
+    result_msg = GuaraniClient.new('fake_token').state('jaz', '1001')
     expect(result_msg).to eq('La estas cursando')
   end
 end
