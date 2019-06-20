@@ -32,7 +32,7 @@ describe 'Courses' do
   end
 
   context 'when there is an inscription' do
-    response = Astapor::Course.handle_response('Jazmin Ferreiro', 'jaz2', 9123, 50)
+    response = Astapor::Course.handle_response('Jazmin Ferreiro', 'jaz2', 9125)
     it 'it return a message' do
       expect(response).not_to be nil
     end
