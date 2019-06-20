@@ -24,8 +24,6 @@ ERROR_MSG = { JSON::ParserError => 'OUps no se como leer el mensaje de la api',
               AstaporApiError => 'Hubo un error en la api',
               StandardError => 'Oups, ocurrió un error' }.freeze
 
-CODE = 1
-
 class Routes
   include MessageHandler
 
@@ -66,13 +64,14 @@ class Routes
 
   on_message '/estado' do |bot, message|
     params = message.text.split(' ')
+    code_index = 1
     puts "params #{params}"
-    if params.length < (CODE + 1)
+    if params.length < (code_index + 1)
       bot.api.send_message(chat_id: message.chat.id, text: 'te falto el codigo de materia')
       return
     end
-    puts "el indice es #{CODE}"
-    course_code = message.text.split(' ')[CODE]
+    puts "el indice es #{code_index}"
+    course_code = message.text.split(' ')[code_index]
     puts "El curso es #{course_code}"
     response = GuaraniClient.new.state(message.from.username, course_code)
     bot.api.send_message(chat_id: message.chat.id, text: response)
